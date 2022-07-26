@@ -83,7 +83,7 @@ namespace TLIVERDED.Models
             DataTable dataTable = new DataTable();
             using (SqlConnection connection = new SqlConnection(this._ConnectionString))
             {
-                using (SqlCommand selectCommand = new SqlCommand("SELECT segmento FROM segmentosportimbrar_JR WHERE estatus = 1 and billto = 'SAYER'", connection))
+                using (SqlCommand selectCommand = new SqlCommand("SELECT segmento FROM segmentosportimbrar_JR WHERE estatus = 1 and billto = 'LIVERDED'", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
                     selectCommand.CommandTimeout = 1000;

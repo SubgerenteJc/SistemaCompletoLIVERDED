@@ -78,14 +78,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TLIVERDED.exe" size="66024">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TLIVERDED.exe" size="65512">
       <assemblyIdentity name="TLIVERDED" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>qYF0ExVrD50Moj1EXsOXBLf2cYK4XGym7ykznk253eQ=</dsig:DigestValue>
+        <dsig:DigestValue>La6jdP4qpcbyzeNYlGd19iysUAICwUHz5Es53dhnolo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

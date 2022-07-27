@@ -23,6 +23,10 @@ namespace TLIVERDED.Models
         {
             return this.modelFact.GetSegmentoRepetido(leg);
         }
+        public DataTable ExisteSegmento(string leg)
+        {
+            return this.modelFact.ExisteSegmento(leg);
+        }
         public DataTable UpdateLeg(string leg, string tipom)
         {
             return this.modelFact.UpdateLeg(leg, tipom);
@@ -129,6 +133,25 @@ namespace TLIVERDED.Models
             this.modelFact.actualizaGeneradas(folioFactura, serieFactura, uuidFactura, pdf_xml_descargaFactura, pdf_descargaFactura, xlm_descargaFactura, cancelFactura, LegNum, Fecha, Total, Moneda, RFC, Origen, Destino);
         }
 
+        public void insertfaltantes(
+         string folioFactura,
+         string serieFactura,
+         string uuidFactura,
+         string pdf_xml_descargaFactura,
+         string pdf_descargaFactura,
+         string xlm_descargaFactura,
+         string cancelFactura,
+         string LegNum,
+         string Fecha,
+         string Total,
+         string Moneda,
+         string RFC,
+         string Origen,
+         string Destino
+     )
+        {
+            this.modelFact.insertfaltantes(folioFactura, serieFactura, uuidFactura, pdf_xml_descargaFactura, pdf_descargaFactura, xlm_descargaFactura, cancelFactura, LegNum, Fecha, Total, Moneda, RFC, Origen, Destino);
+        }
 
         public void ErroresgeneradasCP(
             string Fecha,

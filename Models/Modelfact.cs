@@ -9,7 +9,25 @@ using System.Threading.Tasks;
 namespace TLIVERDED.Models
 {
     public class ModelFact
+
+
     {
+        public string uuid { get; set; }
+        public string motivo { get; set; }
+        public string status { get; set; }
+        
+        public string folio { get; set; }
+        public string fecha { get; set; }
+        public string serie { get; set; }
+        public string rfc { get; set; }
+        public string pdfAndXmlDownload { get; set; }
+        public string pdfDownload { get; set; }
+        public string xmlDownload { get; set; }
+        public string monto { get; set; }
+        public string tipoMoneda { get; set; }
+
+        public string ord_hdrnumber { get; set; }
+        public string tcfix { get; set; }
         private const string facturas = "select folio as Folio,fhemision as Fecha, nombrecliente as Cliente, idreceptor from VISTA_fe_Header";
         private const string facturasClientes = "select distinct  idreceptor from vista_fe_header";
         private const string facturasPorProcesar = "select * from VISTA_fe_Header where  idreceptor not in ('liverpol','GLOBALIV','LIVERTIJ','SFERALIV','FACTUMLV','LIVERDED')";
@@ -83,7 +101,7 @@ namespace TLIVERDED.Models
             DataTable dataTable = new DataTable();
             using (SqlConnection connection = new SqlConnection(this._ConnectionString))
             {
-                using (SqlCommand selectCommand = new SqlCommand("SELECT segmento FROM segmentosportimbrar_JR WHERE estatus = 1 and billto = 'LIVERDED'", connection))
+                using (SqlCommand selectCommand = new SqlCommand("SELECT DISTINCT segmento FROM segmentosportimbrar_JR WHERE billto = 'LIVERDED' and estatus = '1'", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
                     selectCommand.CommandTimeout = 1000;
@@ -141,6 +159,36 @@ namespace TLIVERDED.Models
             {
                 connection.Open();
                 using (SqlCommand selectCommand = new SqlCommand("sp_obtener_segmento_repetido", connection))
+                {
+
+                    selectCommand.CommandType = CommandType.StoredProcedure;
+                    selectCommand.CommandTimeout = 1000;
+                    selectCommand.Parameters.AddWithValue("@leg", (object)leg);
+                    selectCommand.ExecuteNonQuery();
+                    using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
+                    {
+                        try
+                        {
+                            //selectCommand.Connection.Open();
+                            sqlDataAdapter.Fill(dataTable);
+                        }
+                        catch (SqlException ex)
+                        {
+                            connection.Close();
+                            string message = ex.Message;
+                        }
+                    }
+                }
+            }
+            return dataTable;
+        }
+        public DataTable ExisteSegmento(string leg)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection connection = new SqlConnection(this._ConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand selectCommand = new SqlCommand("sp_existe_segmento", connection))
                 {
 
                     selectCommand.CommandType = CommandType.StoredProcedure;
@@ -604,6 +652,57 @@ namespace TLIVERDED.Models
 
 
         public void actualizaGeneradas(
+          string folioFactura,
+          string serieFactura,
+          string uuidFactura,
+          string pdf_xml_descargaFactura,
+          string pdf_descargaFactura,
+          string xlm_descargaFactura,
+          string cancelFactura,
+          string LegNum,
+          string Fecha,
+          string Total,
+          string Moneda,
+          string RFC,
+          string Origen,
+          string Destino)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection connection = new SqlConnection(this._ConnectionString))
+            {
+                using (SqlCommand selectCommand = new SqlCommand("INSERT INTO [dbo].[VISTA_Carta_Porte]([Folio],[Serie],[UUID],[Pdf_xml_descarga],[Pdf_descargaFactura],[xlm_descargaFactura],[cancelFactura],[LegNum],[Fecha],[Total],[Moneda],[RFC],[Origen],[Destino])VALUES(@Folio, @Serie, @UUID, @Pdf_xml_descarga, @Pdf_descargaFactura, @xlm_descargaFactura, @cancelFactura, @LegNum, @Fecha, @Total, @Moneda, @RFC, @Origen, @Destino)", connection))
+                {
+                    selectCommand.Parameters.AddWithValue("@Folio", (object)folioFactura);
+                    selectCommand.Parameters.AddWithValue("@Serie", (object)serieFactura);
+                    selectCommand.Parameters.AddWithValue("@UUID", (object)uuidFactura);
+                    selectCommand.Parameters.AddWithValue("@Pdf_xml_descarga", (object)pdf_xml_descargaFactura);
+                    selectCommand.Parameters.AddWithValue("@Pdf_descargaFactura", (object)pdf_descargaFactura);
+                    selectCommand.Parameters.AddWithValue("@xlm_descargaFactura", (object)xlm_descargaFactura);
+                    selectCommand.Parameters.AddWithValue("@cancelFactura", (object)cancelFactura);
+                    selectCommand.Parameters.AddWithValue("@LegNum", (object)LegNum);
+                    selectCommand.Parameters.AddWithValue("@Fecha", (object)Fecha);
+                    selectCommand.Parameters.AddWithValue("@Total", (object)Total);
+                    selectCommand.Parameters.AddWithValue("@Moneda", (object)Moneda);
+                    selectCommand.Parameters.AddWithValue("@RFC", (object)RFC);
+                    selectCommand.Parameters.AddWithValue("@Origen", (object)Origen);
+                    selectCommand.Parameters.AddWithValue("@Destino", (object)Destino);
+                    using (new SqlDataAdapter(selectCommand))
+                    {
+                        try
+                        {
+                            selectCommand.Connection.Open();
+                            selectCommand.ExecuteNonQuery();
+                        }
+                        catch (SqlException ex)
+                        {
+                            string message = ex.Message;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void insertfaltantes(
           string folioFactura,
           string serieFactura,
           string uuidFactura,

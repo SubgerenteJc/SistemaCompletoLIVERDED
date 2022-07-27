@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace TLIVERDED
 {
     public class Program
     {
+
         static storedProcedure sql = new storedProcedure("miConexion");
         public static FacLabControler facLabControler = new FacLabControler();
         public static string jsonFactura = "", idSucursal = "", idTipoFactura = "", IdApiEmpresa = "";
@@ -53,69 +55,108 @@ namespace TLIVERDED
 
             Program muobject = new Program();
 
-            //string leg = "1238056";
-            //DataTable re = facLabControler.GetSegmentoRepetido(leg);
-            //if (re.Rows.Count > 0)
+            //FUNCION PARA INSERTAR INFO EN VISTACARTAPORTE SI NO ESTA REISTRADA
+            //DataTable tbl = facLabControler.GetLeg();
+            //if (tbl.Rows.Count > 0)
             //{
-            //    //string leg2 = item2["Folio"].ToString();
-            //    Console.WriteLine("El Folio ya esta timbrado" + leg);
+            //    foreach (DataRow list in tbl.Rows)
+            //    {
+            //        string cpfolio = list["segmento"].ToString();
+            //        DataTable resul = facLabControler.ExisteSegmento(cpfolio);
+            //        if (resul.Rows.Count < 1)
+            //        {
+            //            var request7 = (HttpWebRequest)WebRequest.Create("https://canal1.xsa.com.mx:9050/bf2e1036-ba47-49a0-8cd9-e04b36d5afd4/cfdis?folioEspecifico=" + cpfolio);
+            //            var response7 = (HttpWebResponse)request7.GetResponse();
+            //            var responseString7 = new StreamReader(response7.GetResponseStream()).ReadToEnd();
+
+            //            List<ModelFact> separados7 = JsonConvert.DeserializeObject<List<ModelFact>>(responseString7);
+
+            //            if (separados7 != null)
+            //            {
+            //                foreach (var elem in separados7)
+            //                {
+            //                    string Folio = cpfolio;
+            //                    string Serie = elem.serie;
+            //                    string UUID = elem.uuid;
+            //                    string Pdf_xml_descarga = elem.pdfAndXmlDownload;
+            //                    string Pdf_descargaFactura = "https://canal1.xsa.com.mx:9050" + elem.pdfDownload;
+            //                    string xlm_descargaFactura = "https://canal1.xsa.com.mx:9050" + elem.xmlDownload;
+            //                    string cancelFactura = "";
+            //                    string LegNum = cpfolio;
+            //                    string Fecha = elem.fecha;
+            //                    string Total = elem.monto;
+            //                    string Moneda = elem.tipoMoneda;
+            //                    string RFC = elem.rfc;
+            //                    string Origen = "0";
+            //                    string Destino = "";
+
+            //                    facLabControler.insertfaltantes(Folio, Serie, UUID, Pdf_xml_descarga,Pdf_descargaFactura,xlm_descargaFactura,cancelFactura,LegNum,Fecha,Total,Moneda,RFC,Origen,Destino);
+            //                }
+            //            }
+            //        }
+            //    }
             //}
 
+            ////FIN FUNCION
+                //DataTable re = facLabControler.GetSegmentoRepetido(leg);
+                //if (re.Rows.Count > 0)
+                //{
+                //    //string leg2 = item2["Folio"].ToString();
+                //    Console.WriteLine("El Folio ya esta timbrado" + leg);
+                //}
 
-            DataTable td = facLabControler.GetLeg();
-            if (td.Rows.Count > 0)
-            {
 
-                foreach (DataRow item2 in td.Rows)
+
+                DataTable td = facLabControler.GetLeg();
+                if (td.Rows.Count > 0)
                 {
 
-                    string folio = item2["segmento"].ToString();
-                    //Validar que no exista
-                    DataTable re = facLabControler.GetSegmentoRepetido(folio);
-                    if (re.Rows.Count > 0)
+                    foreach (DataRow item2 in td.Rows)
                     {
-                        string foliorepetido = item2["segmento"].ToString();
-                        Console.WriteLine("El Folio ya esta timbrado" + foliorepetido);
 
-                        string tipom = "9";
-                        DataTable updateLeg = facLabControler.UpdateLeg(foliorepetido, tipom);
-                        foreach (DataRow item3 in updateLeg.Rows)
-                        {
-                            string rupdate = item3["segmento"].ToString();
-                            string lupdate = item3["estatus"].ToString();
-                        }
-                    }
-                    else  //SI NO EXISTE CONTINUO
-                    {
-                        foreach (DataRow item in td.Rows)
-                        {
-                            string leg = item["segmento"].ToString();
+                        string folio = item2["segmento"].ToString();
+                        var request2819 = (HttpWebRequest)WebRequest.Create("https://canal1.xsa.com.mx:9050/bf2e1036-ba47-49a0-8cd9-e04b36d5afd4/cfdis?folioEspecifico=" + folio);
+                        var response2819 = (HttpWebResponse)request2819.GetResponse();
+                        var responseString2819 = new StreamReader(response2819.GetResponseStream()).ReadToEnd();
 
-                            valida(leg);
+                        List<ModelFact> separados819 = JsonConvert.DeserializeObject<List<ModelFact>>(responseString2819);
+
+                        if (separados819 != null)
+                        {
+                            string tipomensaje = "9";
+                            DataTable updateLegs = facLabControler.UpdateLeg(folio, tipomensaje);
                         }
+                        else
+                        {
+                        //Validar que no exista
+                            DataTable res = facLabControler.GetSegmentoRepetido(folio);
+                            if (res.Rows.Count > 0)
+                            {
+                                string foliorepetido = item2["segmento"].ToString();
+                                Console.WriteLine("El Folio ya esta timbrado" + foliorepetido);
+
+                                string tipom = "9";
+                                DataTable updateLeg = facLabControler.UpdateLeg(foliorepetido, tipom);
+                                foreach (DataRow item3 in updateLeg.Rows)
+                                {
+                                    string rupdate = item3["segmento"].ToString();
+                                    string lupdate = item3["estatus"].ToString();
+                                }
+                            }
+                            else  //SI NO EXISTE CONTINUO
+                            {
+                                foreach (DataRow item in td.Rows)
+                                {
+                                    string legs = item["segmento"].ToString();
+
+                                    valida(legs);
+                                }
+                            }
+
+                        }
+                        
                     }
                 }
-
-                // -------------------
-
-
-            }
-
-
-            //string leg = "1291239";
-            //valida(leg);
-
-
-
-
-
-            //-----------------------------------------------------------------------------
-
-            //Funcion para cargar archivos
-
-
-            //------------------------------------------------
-
         }
 
         public static List<string> valida(string leg)
@@ -176,7 +217,7 @@ namespace TLIVERDED
                             results.Clear();
                             results.Add("Error");
                             results.Add("Error en la obtención de datos: \r\n" + validaCFDI[0]);//mostrar 
-                            string tipom = "9";
+                            string tipom = "5";
                             DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
                         }
                     }
@@ -327,9 +368,9 @@ namespace TLIVERDED
                 request.AddParameter("application/json", jsonFactura, ParameterType.RequestBody);
                 IRestResponse response = client.Execute(request);
 
-                string respuesta = response.Content.ToString();
+                string respuesta = response.StatusCode.ToString();
 
-                if (respuesta.Contains("Bad request"))
+                if (respuesta == "BadRequest")
                 {
                     return false;
                 }

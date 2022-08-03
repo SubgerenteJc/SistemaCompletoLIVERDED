@@ -78,24 +78,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TLIVERDED.exe" size="65512">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TLIVERDED.exe" size="67048">
       <assemblyIdentity name="TLIVERDED" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>La6jdP4qpcbyzeNYlGd19iysUAICwUHz5Es53dhnolo=</dsig:DigestValue>
+        <dsig:DigestValue>dwZUeG7rqMQJ9VOSmEhwWm8hJzDBzFlyLp2Auyjx6aY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="TLIVERDED.exe.config" size="422">
+  <file name="TLIVERDED.exe.config" size="1510">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>0A56mMO5WKQ9JRuD1YPAs9fMHFVhuv+Q25mwTy9bhAA=</dsig:DigestValue>
+      <dsig:DigestValue>/0nTcmnkWHbkXY5MyqupFjT1T+KWg0ugyrQf7FsQ7ko=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

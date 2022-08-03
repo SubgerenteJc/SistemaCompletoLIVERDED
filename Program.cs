@@ -55,58 +55,7 @@ namespace TLIVERDED
 
             Program muobject = new Program();
 
-            //FUNCION PARA INSERTAR INFO EN VISTACARTAPORTE SI NO ESTA REISTRADA
-            //DataTable tbl = facLabControler.GetLeg();
-            //if (tbl.Rows.Count > 0)
-            //{
-            //    foreach (DataRow list in tbl.Rows)
-            //    {
-            //        string cpfolio = list["segmento"].ToString();
-            //        DataTable resul = facLabControler.ExisteSegmento(cpfolio);
-            //        if (resul.Rows.Count < 1)
-            //        {
-            //            var request7 = (HttpWebRequest)WebRequest.Create("https://canal1.xsa.com.mx:9050/bf2e1036-ba47-49a0-8cd9-e04b36d5afd4/cfdis?folioEspecifico=" + cpfolio);
-            //            var response7 = (HttpWebResponse)request7.GetResponse();
-            //            var responseString7 = new StreamReader(response7.GetResponseStream()).ReadToEnd();
-
-            //            List<ModelFact> separados7 = JsonConvert.DeserializeObject<List<ModelFact>>(responseString7);
-
-            //            if (separados7 != null)
-            //            {
-            //                foreach (var elem in separados7)
-            //                {
-            //                    string Folio = cpfolio;
-            //                    string Serie = elem.serie;
-            //                    string UUID = elem.uuid;
-            //                    string Pdf_xml_descarga = elem.pdfAndXmlDownload;
-            //                    string Pdf_descargaFactura = "https://canal1.xsa.com.mx:9050" + elem.pdfDownload;
-            //                    string xlm_descargaFactura = "https://canal1.xsa.com.mx:9050" + elem.xmlDownload;
-            //                    string cancelFactura = "";
-            //                    string LegNum = cpfolio;
-            //                    string Fecha = elem.fecha;
-            //                    string Total = elem.monto;
-            //                    string Moneda = elem.tipoMoneda;
-            //                    string RFC = elem.rfc;
-            //                    string Origen = "0";
-            //                    string Destino = "";
-
-            //                    facLabControler.insertfaltantes(Folio, Serie, UUID, Pdf_xml_descarga,Pdf_descargaFactura,xlm_descargaFactura,cancelFactura,LegNum,Fecha,Total,Moneda,RFC,Origen,Destino);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-
-            ////FIN FUNCION
-                //DataTable re = facLabControler.GetSegmentoRepetido(leg);
-                //if (re.Rows.Count > 0)
-                //{
-                //    //string leg2 = item2["Folio"].ToString();
-                //    Console.WriteLine("El Folio ya esta timbrado" + leg);
-                //}
-
-
-
+            //PASO 1 - VALIDA EN TRALIX QUE NO EXISTA EL SEGMENTO
                 DataTable td = facLabControler.GetLeg();
                 if (td.Rows.Count > 0)
                 {
@@ -120,17 +69,64 @@ namespace TLIVERDED
                         var responseString2819 = new StreamReader(response2819.GetResponseStream()).ReadToEnd();
 
                         List<ModelFact> separados819 = JsonConvert.DeserializeObject<List<ModelFact>>(responseString2819);
-
+                    //PASO 2 - SI EXISTE LE ACTUALIZA EL ESTATUS A 9
                         if (separados819 != null)
                         {
-                            string tipomensaje = "9";
-                            DataTable updateLegs = facLabControler.UpdateLeg(folio, tipomensaje);
+                            foreach (var rlist in separados819)
+                            {
+                                string serie = rlist.serie;
+                                if (serie == "TDRXP" || serie =="TDRZP")
+                                {
+                                    string tipomensaje = "9";
+                                    DataTable updateLegs = facLabControler.UpdateLeg(folio, tipomensaje);
+                                }
+                                else
+                                {
+                                    DataTable res = facLabControler.GetSegmentoRepetido(folio);
+                                    //PASO 4 - SI EXISTE LE ACTUALIZA EL ESTATUS A 9
+                                    if (res.Rows.Count > 0)
+                                    {
+                                        string foliorepetido = item2["segmento"].ToString();
+                                        Console.WriteLine("El Folio ya esta timbrado" + foliorepetido);
+
+                                        string tipom = "9";
+                                        DataTable updateLeg = facLabControler.UpdateLeg(foliorepetido, tipom);
+                                        foreach (DataRow item3 in updateLeg.Rows)
+                                        {
+                                            string rupdate = item3["segmento"].ToString();
+                                            string lupdate = item3["estatus"].ToString();
+                                        }
+                                    }
+                                    else  // PASO 5 - SI NO EXISTE CONTINUA CON EL PROCESO DE TIMBRADO
+                                    {
+                                        DataTable results = facLabControler.TieneMercancias(folio);
+                                        //PASO 4 - SI EXISTE LE ACTUALIZA EL ESTATUS A 9
+                                        foreach (DataRow resl in results.Rows)
+                                        {
+                                            string totald = resl["total"].ToString();
+                                            int num_var = Int32.Parse(totald);
+                                            if (num_var > 0)
+                                            {
+                                                foreach (DataRow item in td.Rows)
+                                                {
+                                                    string legs = item["segmento"].ToString();
+
+                                                    valida(legs);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                           
                         }
                         else
                         {
-                        //Validar que no exista
+                        //PASO 3 - VALIDA QUE NO ESTE REGISTRADO EN LA VISTA_CARTA_PORTE
                             DataTable res = facLabControler.GetSegmentoRepetido(folio);
-                            if (res.Rows.Count > 0)
+                        //PASO 4 - SI EXISTE LE ACTUALIZA EL ESTATUS A 9
+                        if (res.Rows.Count > 0)
                             {
                                 string foliorepetido = item2["segmento"].ToString();
                                 Console.WriteLine("El Folio ya esta timbrado" + foliorepetido);
@@ -143,13 +139,23 @@ namespace TLIVERDED
                                     string lupdate = item3["estatus"].ToString();
                                 }
                             }
-                            else  //SI NO EXISTE CONTINUO
+                            else  // PASO 5 - SI NO EXISTE CONTINUA CON EL PROCESO DE TIMBRADO
                             {
-                                foreach (DataRow item in td.Rows)
+                                DataTable results = facLabControler.TieneMercancias(folio);
+                            //PASO 4 - SI EXISTE LE ACTUALIZA EL ESTATUS A 9
+                                foreach (DataRow resl in results.Rows)
                                 {
-                                    string legs = item["segmento"].ToString();
+                                    string totald = resl["total"].ToString();
+                                    int num_var = Int32.Parse(totald);
+                                    if (num_var > 0)
+                                    {
+                                        foreach (DataRow item in td.Rows)
+                                        {
+                                            string legs = item["segmento"].ToString();
 
-                                    valida(legs);
+                                            valida(legs);
+                                        }
+                                    }
                                 }
                             }
 
@@ -163,32 +169,42 @@ namespace TLIVERDED
         {
             string compCarta = "";
             results.Clear();
+            //PASO 6 - VALIDA EL TAMAÑO DEL SEGMENTO
             if (leg.Length > 0 && leg != "null" && leg != "")
             {
                 try
                 {
+                    //VALIDO QUE TENGA MERCANCIA
+
                     List<string> validaCFDI = new List<string>();
+                    //PASO 7 - VALIDA QUE ESTE OK LA CARTAPORTE
                     validaCFDI = sql.recuperaRegistros("exec sp_validaCFDICartaporte " + leg);
                     if (validaCFDI.Count > 0)
                     {
+                        //PASO 8 - VALIDA QUE ESTE OK EL RESULTADO
                         if (validaCFDI[1].Contains("OK"))
                         {
+                            //PASO 9 - CREA EL CUERPO DEL TXT
                             compCarta = sql.recuperaValor("exec sp_compCartaPorte " + leg);
                             if (compCarta.Length > 0)
                             {
                                 tiposCfds();
                                 words = Regex.Replace(compCarta, @"\r\n?|\n", "").Split('|');
                                 iniciaDatos();
+                                //PASO 10 - INGRESA PARA TIMBRAR LA CARTAPORTE
                                 if (Cartaporte(leg, compCarta))
                                 {
+                                    //PASO 14 - ACTUALIZA EL ESTATUS A 2 - OK 
                                     results.Add("ok");//mostrar  }
                                     string tipom = "2";
+                                    string mensaje = "Cartaporte timbrada con exito!!!";
                                     DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
                                     foreach (DataRow item in updateLeg.Rows)
                                     {
                                         string rupdate = item["segmento"].ToString();
                                         string lupdate = item["estatus"].ToString();
                                     }
+                                    facLabControler.enviarNotificacion(leg, mensaje);
 
                                     //Aqui actualizamos en estatus 
 
@@ -199,7 +215,9 @@ namespace TLIVERDED
                                     results.Add("Error1");
                                     results.Add("Ver el historial de errores para mas información, copiar el error y reportar a TI.");
                                     string tipom = "3";
+                                    string mensaje = "Ver el historial de errores para mas información, copiar el error y reportar a TI.";
                                     DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
+                                    facLabControler.enviarNotificacion(leg,mensaje);
                                 }
                             }
                             else
@@ -208,7 +226,9 @@ namespace TLIVERDED
                                 results.Add("Error1");
                                 results.Add("Error al generar carta porte.");//mostrar 
                                 string tipom = "3";
+                                string mensaje = "Error al generar carta porte.";
                                 DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
+                                facLabControler.enviarNotificacion(leg,mensaje);
                             }
                         }
                         else
@@ -218,7 +238,9 @@ namespace TLIVERDED
                             results.Add("Error");
                             results.Add("Error en la obtención de datos: \r\n" + validaCFDI[0]);//mostrar 
                             string tipom = "5";
+                            string mensaje = "Error en la obtención de datos:";
                             DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
+                            facLabControler.enviarNotificacion(leg,mensaje);
                         }
                     }
                     else
@@ -227,7 +249,9 @@ namespace TLIVERDED
                         results.Add("Error");
                         results.Add("Error al validar el segmento.");//mostrar 
                         string tipom = "3";
+                        string mensaje = "Error al validar el segmento.";
                         DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
+                        facLabControler.enviarNotificacion(leg,mensaje);
                     }
                 }
                 catch (Exception)
@@ -236,7 +260,9 @@ namespace TLIVERDED
                     results.Add("Error");
                     results.Add("Segmento invalido");
                     string tipom = "3";
+                    string mensaje = "Segmento invalido";
                     DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
+                    facLabControler.enviarNotificacion(leg,mensaje);
                 }
             }
             else { results.Add("Error3"); }
@@ -338,6 +364,7 @@ namespace TLIVERDED
             }
         }
 
+        //PASO 11 - RECIBE EL SEGMENTO Y EL CUERPO DEL TXT
         public static bool Cartaporte(string leg, string strtext)
         {
             jsonFactura = "{\r\n\r\n  \"idTipoCfd\":" + "\"" + idTipoFactura + "\"";
@@ -352,6 +379,7 @@ namespace TLIVERDED
             try
             {
                 //IdApiEmpresa = "bf2e1036-ba47-49a0-8cd9-e04b36d5afd4";
+                //PASO 12 - HACE UNA PETICION PUT A TRALIX PARA TIMBRAR LA CARTAPORTE
                 var client = new RestClient("https://canal1.xsa.com.mx:9050/" + "bf2e1036-ba47-49a0-8cd9-e04b36d5afd4" + "/cfdis");
                 var request = new RestRequest(Method.PUT);
 
@@ -369,7 +397,7 @@ namespace TLIVERDED
                 IRestResponse response = client.Execute(request);
 
                 string respuesta = response.StatusCode.ToString();
-
+                //PASO 13 - AQUI VALIDA LA RESPUESTA DE TRALIX Y SI ES OK AVANZA Y SUBE AL FTP E INSERTA EL REGISTRO A VISTA_CARTA_PORTE
                 if (respuesta == "BadRequest")
                 {
                     return false;

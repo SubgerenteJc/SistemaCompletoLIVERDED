@@ -23,6 +23,10 @@ namespace TLIVERDED.Models
         {
             return this.modelFact.GetSegmentoRepetido(leg);
         }
+        public DataTable TieneMercancias(string leg)
+        {
+            return this.modelFact.TieneMercancias(leg);
+        }
         public DataTable ExisteSegmento(string leg)
         {
             return this.modelFact.ExisteSegmento(leg);
@@ -81,6 +85,10 @@ namespace TLIVERDED.Models
         public void actualizaFactura(string fact, string comprobante, int mbnumber)
         {
             this.modelFact.updateFactura(fact, comprobante, mbnumber);
+        }
+        public void enviarNotificacion(string leg, string mensaje)
+        {
+            this.modelFact.enviarNotificacion(leg, mensaje);
         }
 
         public string minInvoice(string ivh)

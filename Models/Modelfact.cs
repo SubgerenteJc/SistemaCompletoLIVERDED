@@ -70,7 +70,38 @@ namespace TLIVERDED.Models
         {
             this._ConnectionString = new Connection().connectionString;
         }
+        public void enviarNotificacion(string leg, string mensaje)
+        {
+            string cadena2 = @"Data source=172.24.16.112; Initial Catalog=TMWSuite; User ID=sa; Password=tdr9312;Trusted_Connection=false;MultipleActiveResultSets=true";
+            //DataTable dataTable = new DataTable();
 
+            using (SqlConnection connection = new SqlConnection(cadena2))
+            {
+
+                using (SqlCommand selectCommand = new SqlCommand("sp_NotificacionesLiverded", connection))
+                {
+
+                    selectCommand.CommandType = CommandType.StoredProcedure;
+                    selectCommand.CommandTimeout = 1000;
+                    selectCommand.Parameters.AddWithValue("@leg", (object)leg);
+                    selectCommand.Parameters.AddWithValue("@mensaje", (object)mensaje);
+                    try
+                    {
+                        connection.Open();
+                        selectCommand.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = ex.Message;
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+
+        }
         public DataTable getFacturas()
         {
             DataTable dataTable = new DataTable();
@@ -101,7 +132,7 @@ namespace TLIVERDED.Models
             DataTable dataTable = new DataTable();
             using (SqlConnection connection = new SqlConnection(this._ConnectionString))
             {
-                using (SqlCommand selectCommand = new SqlCommand("SELECT DISTINCT segmento FROM segmentosportimbrar_JR WHERE billto = 'LIVERDED' and segmento = '1304288'", connection))
+                using (SqlCommand selectCommand = new SqlCommand("SELECT DISTINCT segmento FROM segmentosportimbrar_JR WHERE billto = 'LIVERDED' and estatus = '1'", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
                     selectCommand.CommandTimeout = 100;
@@ -159,6 +190,36 @@ namespace TLIVERDED.Models
             {
                 connection.Open();
                 using (SqlCommand selectCommand = new SqlCommand("sp_obtener_segmento_repetido", connection))
+                {
+
+                    selectCommand.CommandType = CommandType.StoredProcedure;
+                    selectCommand.CommandTimeout = 100;
+                    selectCommand.Parameters.AddWithValue("@leg", (object)leg);
+                    selectCommand.ExecuteNonQuery();
+                    using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
+                    {
+                        try
+                        {
+                            //selectCommand.Connection.Open();
+                            sqlDataAdapter.Fill(dataTable);
+                        }
+                        catch (SqlException ex)
+                        {
+                            connection.Close();
+                            string message = ex.Message;
+                        }
+                    }
+                }
+            }
+            return dataTable;
+        }
+        public DataTable TieneMercancias(string leg)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection connection = new SqlConnection(this._ConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand selectCommand = new SqlCommand("sp_tiene_mercancias", connection))
                 {
 
                     selectCommand.CommandType = CommandType.StoredProcedure;

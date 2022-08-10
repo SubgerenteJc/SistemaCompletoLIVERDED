@@ -70,7 +70,100 @@ namespace TLIVERDED.Models
         {
             this._ConnectionString = new Connection().connectionString;
         }
-        public void enviarNotificacion(string leg, string mensaje)
+        public void RegEjecucion()
+        {
+            string cadena2 = @"Data source=172.24.16.112; Initial Catalog=TMWSuite; User ID=sa; Password=tdr9312;Trusted_Connection=false;MultipleActiveResultSets=true";
+            //DataTable dataTable = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(cadena2))
+            {
+
+                using (SqlCommand selectCommand = new SqlCommand("usp_registarejecucion", connection))
+                {
+
+                    selectCommand.CommandType = CommandType.StoredProcedure;
+                    selectCommand.CommandTimeout = 100000;
+                    //selectCommand.Parameters.AddWithValue("@leg", (object)leg);
+                    //selectCommand.Parameters.AddWithValue("@mensaje", (object)mensaje);
+                    try
+                    {
+                        connection.Open();
+                        selectCommand.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = ex.Message;
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+
+        }
+        public DataTable GetEstatus(string orden)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection connection = new SqlConnection(this._ConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand selectCommand = new SqlCommand("sp_get_estatus", connection))
+                {
+
+                    selectCommand.CommandType = CommandType.StoredProcedure;
+                    selectCommand.CommandTimeout = 100000;
+                    selectCommand.Parameters.AddWithValue("@orden", (object)orden);
+                    selectCommand.ExecuteNonQuery();
+                    using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
+                    {
+                        try
+                        {
+                            //selectCommand.Connection.Open();
+                            sqlDataAdapter.Fill(dataTable);
+                        }
+                        catch (SqlException ex)
+                        {
+                            connection.Close();
+                            string message = ex.Message;
+                        }
+                    }
+                }
+            }
+            return dataTable;
+        }
+        public DataTable ObtSegmento(string orden)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection connection = new SqlConnection(this._ConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand selectCommand = new SqlCommand("sp_obtener_segmento_legheader", connection))
+                {
+
+                    selectCommand.CommandType = CommandType.StoredProcedure;
+                    selectCommand.CommandTimeout = 100000;
+                    selectCommand.Parameters.AddWithValue("@orden", (object)orden);
+                    //selectCommand.Parameters.AddWithValue("@tipom", (object)tipom);
+                    selectCommand.ExecuteNonQuery();
+                    using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
+                    {
+                        try
+                        {
+                            //selectCommand.Connection.Open();
+                            sqlDataAdapter.Fill(dataTable);
+                        }
+                        catch (SqlException ex)
+                        {
+                            connection.Close();
+                            string message = ex.Message;
+                        }
+                    }
+                }
+            }
+            return dataTable;
+        }
+        public void enviarNotificacion(string leg, string titulo,string mensaje)
         {
             string cadena2 = @"Data source=172.24.16.112; Initial Catalog=TMWSuite; User ID=sa; Password=tdr9312;Trusted_Connection=false;MultipleActiveResultSets=true";
             //DataTable dataTable = new DataTable();
@@ -82,8 +175,9 @@ namespace TLIVERDED.Models
                 {
 
                     selectCommand.CommandType = CommandType.StoredProcedure;
-                    selectCommand.CommandTimeout = 1000;
+                    selectCommand.CommandTimeout = 100000;
                     selectCommand.Parameters.AddWithValue("@leg", (object)leg);
+                    selectCommand.Parameters.AddWithValue("@titulo", (object)titulo);
                     selectCommand.Parameters.AddWithValue("@mensaje", (object)mensaje);
                     try
                     {
@@ -110,7 +204,7 @@ namespace TLIVERDED.Models
                 using (SqlCommand selectCommand = new SqlCommand("select folio as Folio,fhemision as Fecha, nombrecliente as Cliente, idreceptor from VISTA_fe_Header", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -127,6 +221,75 @@ namespace TLIVERDED.Models
             }
             return dataTable;
         }
+        public void GetMerc(string Ai_orden, string Av_cmd_code, string Av_cmd_description, string Af_weight, string Av_weightunit, string Af_count, string Av_countunit)
+        {
+            string cadena2 = @"Data source=172.24.16.112; Initial Catalog=TMWSuite; User ID=sa; Password=tdr9312;Trusted_Connection=false;MultipleActiveResultSets=true";
+            //DataTable dataTable = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(cadena2))
+            {
+
+                using (SqlCommand selectCommand = new SqlCommand("sp_Obtiene_Stops_Orden_JR", connection))
+                {
+
+                    selectCommand.CommandType = CommandType.StoredProcedure;
+                    selectCommand.CommandTimeout = 1000;
+                    selectCommand.Parameters.AddWithValue("@Ai_orden", Ai_orden);
+                    selectCommand.Parameters.AddWithValue("@Av_cmd_code", Av_cmd_code);
+                    selectCommand.Parameters.AddWithValue("@Av_cmd_description", Av_cmd_description);
+                    selectCommand.Parameters.AddWithValue("@Af_weight", Af_weight);
+                    selectCommand.Parameters.AddWithValue("@Av_weightunit", Av_weightunit);
+                    selectCommand.Parameters.AddWithValue("@Af_count", Af_count);
+                    selectCommand.Parameters.AddWithValue("@Av_countunit", Av_countunit);
+
+                    try
+                    {
+                        connection.Open();
+                        selectCommand.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = ex.Message;
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+
+        }
+        public void DeleteMerc(string Ai_orden)
+        {
+            string cadena2 = @"Data source=172.24.16.112; Initial Catalog=TMWSuite; User ID=sa; Password=tdr9312;Trusted_Connection=false;MultipleActiveResultSets=true";
+            //DataTable dataTable = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(cadena2))
+            {
+
+                using (SqlCommand selectCommand = new SqlCommand("sp_ordenborrar_mercancias", connection))
+                {
+
+                    selectCommand.CommandType = CommandType.StoredProcedure;
+                    selectCommand.CommandTimeout = 1000;
+                    selectCommand.Parameters.AddWithValue("@Ai_orden", Ai_orden);
+                    try
+                    {
+                        connection.Open();
+                        selectCommand.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = ex.Message;
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+
+        }
         public DataTable getLeg()
         {
             DataTable dataTable = new DataTable();
@@ -135,7 +298,7 @@ namespace TLIVERDED.Models
                 using (SqlCommand selectCommand = new SqlCommand("SELECT DISTINCT segmento FROM segmentosportimbrar_JR WHERE billto = 'LIVERDED' and estatus = '1'", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -162,7 +325,7 @@ namespace TLIVERDED.Models
                 {
 
                     selectCommand.CommandType = CommandType.StoredProcedure;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     selectCommand.Parameters.AddWithValue("@leg", (object)leg);
                     selectCommand.Parameters.AddWithValue("@tipom", (object)tipom);
                     selectCommand.ExecuteNonQuery();
@@ -193,7 +356,7 @@ namespace TLIVERDED.Models
                 {
 
                     selectCommand.CommandType = CommandType.StoredProcedure;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     selectCommand.Parameters.AddWithValue("@leg", (object)leg);
                     selectCommand.ExecuteNonQuery();
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
@@ -223,8 +386,38 @@ namespace TLIVERDED.Models
                 {
 
                     selectCommand.CommandType = CommandType.StoredProcedure;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     selectCommand.Parameters.AddWithValue("@leg", (object)leg);
+                    selectCommand.ExecuteNonQuery();
+                    using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
+                    {
+                        try
+                        {
+                            //selectCommand.Connection.Open();
+                            sqlDataAdapter.Fill(dataTable);
+                        }
+                        catch (SqlException ex)
+                        {
+                            connection.Close();
+                            string message = ex.Message;
+                        }
+                    }
+                }
+            }
+            return dataTable;
+        }
+        public DataTable ExisteSegmentos(string seg)
+        {
+            DataTable dataTable = new DataTable();
+            using (SqlConnection connection = new SqlConnection(this._ConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand selectCommand = new SqlCommand("sp_existe_segmentos", connection))
+                {
+
+                    selectCommand.CommandType = CommandType.StoredProcedure;
+                    selectCommand.CommandTimeout = 100000;
+                    selectCommand.Parameters.AddWithValue("@seg", (object)seg);
                     selectCommand.ExecuteNonQuery();
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
@@ -253,7 +446,7 @@ namespace TLIVERDED.Models
                 {
 
                     selectCommand.CommandType = CommandType.StoredProcedure;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     selectCommand.Parameters.AddWithValue("@leg", (object)leg);
                     selectCommand.ExecuteNonQuery();
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
@@ -281,7 +474,7 @@ namespace TLIVERDED.Models
                 using (SqlCommand selectCommand = new SqlCommand("select distinct  idreceptor from vista_fe_header", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -307,7 +500,7 @@ namespace TLIVERDED.Models
                 using (SqlCommand selectCommand = new SqlCommand("select * from vista_fe_generadas where fhemision >'2019-01-01' and rutapdf not like '%:9050%' order by 5 desc", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -333,7 +526,7 @@ namespace TLIVERDED.Models
                 using (SqlCommand selectCommand = new SqlCommand("select * from VISTA_fe_Header where idreceptor = @idreceptor and  idreceptor not in ('liverpol','GLOBALIV','LIVERTIJ','SFERALIV','FACTUMLV','MERCANLV','LIVERDED')", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     selectCommand.Parameters.AddWithValue("@idreceptor", (object)billto);
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
@@ -359,7 +552,7 @@ namespace TLIVERDED.Models
                 using (SqlCommand selectCommand = new SqlCommand("select * from VISTA_fe_Header where idreceptor = @idreceptor and  idreceptor not in ('liverpol','GLOBALIV','LIVERTIJ','SFERALIV','FACTUMLV','MERCANLV','LIVERDED')", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     selectCommand.Parameters.AddWithValue("@segmento", (object)segmento);
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
@@ -386,7 +579,7 @@ namespace TLIVERDED.Models
                 using (SqlCommand selectCommand = new SqlCommand("select * from VISTA_fe_Header where idreceptor in ('liverpol','GLOBALIV','LIVERTIJ','SFERALIV','FACTUMLV','MERCANLV','LIVERDED')", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -412,7 +605,7 @@ namespace TLIVERDED.Models
                 using (SqlCommand selectCommand = new SqlCommand("select ref_number, ref_type from referencenumber where ord_hdrnumber = @orden and (ref_type = 'ADEHOJ' or ref_type = 'ADEPED' or ref_type = 'LPROV')", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -442,7 +635,7 @@ namespace TLIVERDED.Models
                 {
                     selectCommand.CommandType = CommandType.Text;
                     selectCommand.Parameters.AddWithValue("@factura", (object)fact);
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -464,7 +657,7 @@ namespace TLIVERDED.Models
                 {
                     selectCommand.CommandType = CommandType.Text;
                     selectCommand.Parameters.AddWithValue("@parmFact", (object)str);
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -493,7 +686,7 @@ namespace TLIVERDED.Models
                 {
                     selectCommand.CommandType = CommandType.Text;
                     selectCommand.Parameters.AddWithValue("@factura", (object)p);
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -521,7 +714,7 @@ namespace TLIVERDED.Models
                 {
                     selectCommand.CommandType = CommandType.Text;
                     selectCommand.Parameters.AddWithValue("@factura", (object)p);
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {
                         try
@@ -604,7 +797,7 @@ namespace TLIVERDED.Models
                 using (SqlCommand selectCommand = new SqlCommand("select top 1 usr_password from  tlbUserAccess tu inner join ttsusers ttu on usr_userid= ttu.usr_userid where usr_mail =@user and usr_access = 'Y'", connection))
                 {
                     selectCommand.CommandType = CommandType.Text;
-                    selectCommand.CommandTimeout = 100;
+                    selectCommand.CommandTimeout = 100000;
                     selectCommand.Parameters.AddWithValue("@user", (object)user);
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(selectCommand))
                     {

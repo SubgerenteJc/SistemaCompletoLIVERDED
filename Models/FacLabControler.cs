@@ -15,9 +15,29 @@ namespace TLIVERDED.Models
         {
             return this.modelFact.getFacturas();
         }
+        public void GetMerc(string Ai_orden, string Av_cmd_code, string Av_cmd_description, string Af_weight, string Av_weightunit, string Af_count, string Av_countunit)
+        {
+            this.modelFact.GetMerc(Ai_orden, Av_cmd_code, Av_cmd_description, Af_weight, Av_weightunit, Af_count, Av_countunit);
+        }
+        public void DeleteMerc(string Ai_orden)
+        {
+            this.modelFact.DeleteMerc(Ai_orden);
+        }
         public DataTable GetLeg()
         {
             return this.modelFact.getLeg();
+        }
+        public DataTable ObtSegmento(string orden)
+        {
+            return this.modelFact.ObtSegmento(orden);
+        }
+        public DataTable ExisteSegmentos(string seg)
+        {
+            return this.modelFact.ExisteSegmentos(seg);
+        }
+        public DataTable GetEstatus(string orden)
+        {
+            return this.modelFact.GetEstatus(orden);
         }
         public DataTable GetSegmentoRepetido(string leg)
         {
@@ -86,9 +106,13 @@ namespace TLIVERDED.Models
         {
             this.modelFact.updateFactura(fact, comprobante, mbnumber);
         }
-        public void enviarNotificacion(string leg, string mensaje)
+        public void enviarNotificacion(string leg, string titulo,string mensaje)
         {
-            this.modelFact.enviarNotificacion(leg, mensaje);
+            this.modelFact.enviarNotificacion(leg, titulo ,mensaje);
+        }
+        public void RegEjecucion()
+        {
+            this.modelFact.RegEjecucion();
         }
 
         public string minInvoice(string ivh)

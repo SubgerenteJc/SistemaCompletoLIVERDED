@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="TLIVERDED.exe" version="1.0.0.2" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="TLIVERDED.exe" version="1.0.0.10" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <application />
   <entryPoint>
     <assemblyIdentity name="TLIVERDED" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
@@ -78,24 +78,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TLIVERDED.exe" size="67048">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TLIVERDED.exe" size="70632">
       <assemblyIdentity name="TLIVERDED" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>dwZUeG7rqMQJ9VOSmEhwWm8hJzDBzFlyLp2Auyjx6aY=</dsig:DigestValue>
+        <dsig:DigestValue>ge5/zQr1IQuJAXCCfJcbAtkMo0APYKZkAM7UaYEM50s=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="TLIVERDED.exe.config" size="1510">
+  <file name="TLIVERDED.exe.config" size="2417">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>/0nTcmnkWHbkXY5MyqupFjT1T+KWg0ugyrQf7FsQ7ko=</dsig:DigestValue>
+      <dsig:DigestValue>kOCOQv6TIJ88eQDooO3W2NIY2gsddRZOkZVVMzp/F3U=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

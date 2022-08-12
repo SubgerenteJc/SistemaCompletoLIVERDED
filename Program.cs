@@ -100,7 +100,7 @@ namespace TLIVERDED
                                             {
                                                 string esegmento = isegm["segmento"].ToString();
                                                 int counter = 1;
-                                                foreach (string line in File.ReadLines(sourceFile, Encoding.UTF8))
+                                                foreach (string line in File.ReadLines(sourceFile, Encoding.Default))
                                                 {
                                                     if (counter > 1)
                                                     {
@@ -112,7 +112,9 @@ namespace TLIVERDED
                                                         //string col5 = values[4];
                                                         //string col6 = values[5];
                                                         string Av_cmd_code = values[6];
-                                                        string Av_cmd_description = values[7];
+                                                        string descrip = values[7];
+                                                        string Av_cmd_description = descrip.Replace("\"", "");
+                                                        //string Av_cmd_description = values[7];
                                                         string Af_count = values[8];
                                                         string Av_countunit = values[9];
                                                         //string col11 = values[10];
@@ -138,6 +140,7 @@ namespace TLIVERDED
                                                 string destinationFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDEDUPLOADS\" + item.Name;
                                                 //string destinationFile = @"C:\Administración\Proyecto LIVERDED\Procesadas\" + item.Name;
                                                 System.IO.File.Move(sourceFile, destinationFile);
+                                                //facLabControler.DeleteMerc(Ai_orden);
 
 
 

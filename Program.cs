@@ -64,8 +64,8 @@ namespace TLIVERDED
         {
             string[] values;
             DataTable tbl = new DataTable();
-            //DirectoryInfo di24 = new DirectoryInfo(@"\\10.223.208.41\Users\Administrator\Documents\LIVERDED");
-            DirectoryInfo di24 = new DirectoryInfo(@"C:\Administración\Proyecto LIVERDED\Ordenes");
+            DirectoryInfo di24 = new DirectoryInfo(@"\\10.223.208.41\Users\Administrator\Documents\LIVERDED");
+            //DirectoryInfo di24 = new DirectoryInfo(@"C:\Administración\Proyecto LIVERDED\Ordenes");
             FileInfo[] files24 = di24.GetFiles("*.dat");
 
             int cantidad24 = files24.Length;
@@ -73,8 +73,8 @@ namespace TLIVERDED
             {
                 foreach (var item in files24)
                 {
-                    //string sourceFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDED\" + item.Name;
-                    string sourceFile = @"C:\Administración\Proyecto LIVERDED\Ordenes\" + item.Name;
+                    string sourceFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDED\" + item.Name;
+                    //string sourceFile = @"C:\Administración\Proyecto LIVERDED\Ordenes\" + item.Name;
                     string Ai_orden = item.Name.Replace(".dat", "");
                     string Av_weightunit = "KGM";
                     //facLabControler.getMercancias(Ai_orden, Av_cmd_code, Av_cmd_description, Af_weight, Av_weightunit, Af_count, Av_countunit);
@@ -100,7 +100,7 @@ namespace TLIVERDED
                                             {
                                                 string esegmento = isegm["segmento"].ToString();
                                                 int counter = 1;
-                                                foreach (string line in File.ReadLines(sourceFile, Encoding.Default))
+                                                foreach (string line in File.ReadLines(sourceFile, Encoding.UTF8))
                                                 {
                                                     if (counter > 1)
                                                     {
@@ -128,15 +128,15 @@ namespace TLIVERDED
                                                         {
 
                                                             facLabControler.GetMerc(Ai_orden, Av_cmd_code, Av_cmd_description, Af_weight, Av_weightunit, Af_count, Av_countunit);
-                                                            facLabControler.DeleteMerc(Ai_orden);
+                                                            
                                                         }
                                                     }
                                                     counter++;
                                                 }
 
-
-                                                //string destinationFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDEDUPLOADS\" + item.Name;
-                                                string destinationFile = @"C:\Administración\Proyecto LIVERDED\Procesadas\" + item.Name;
+                                                facLabControler.DeleteMerc(Ai_orden);
+                                                string destinationFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDEDUPLOADS\" + item.Name;
+                                                //string destinationFile = @"C:\Administración\Proyecto LIVERDED\Procesadas\" + item.Name;
                                                 System.IO.File.Move(sourceFile, destinationFile);
 
 

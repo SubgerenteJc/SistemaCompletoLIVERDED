@@ -85,14 +85,18 @@ namespace TLIVERDED
                                     foreach (DataRow iseg in rtds.Rows)
                                     {
                                         string nseg = iseg["segmento"].ToString();
+                           
 
-                                        DataTable otds = facLabControler.ExisteSegmentos(nseg);
+                            DataTable otds = facLabControler.ExisteSegmentos(nseg);
                                         if (otds.Rows.Count > 0)
                                         {
                                             foreach (DataRow isegm in otds.Rows)
                                             {
                                                 string esegmento = isegm["segmento"].ToString();
-                                                int counter = 1;
+
+                                    
+
+                                    int counter = 1;
                                                 foreach (string line in File.ReadLines(sourceFile, Encoding.Default))
                                                 {
                                                     if (counter > 1)
@@ -486,9 +490,18 @@ namespace TLIVERDED
                                     results.Add("Ver el historial de errores para mas información, copiar el error y reportar a TI.");
                                     string tipom = "3";
                                     string titulo = "Error en el segmento: ";
-                                    string mensaje = "Ver el historial de errores para mas información, copiar el error y reportar a TI.";
+                                    //string mensaje = "Ver el historial de errores para mas información, copiar el error y reportar a TI.";
                                     DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
-                                    facLabControler.enviarNotificacion(leg,titulo,mensaje);
+                                    DataTable VerErrores = facLabControler.VerErrores(leg);
+                                    foreach (DataRow itemr in VerErrores.Rows)
+                                    {
+                                        string erro1 = itemr["Erro1"].ToString();
+                                        string erro2 = itemr["Erro2"].ToString();
+                                        string mensaje = "Error 1: " + erro1 + "\r\n" + "Error 2: " + erro2;
+                                        facLabControler.enviarNotificacion(leg, titulo, mensaje);
+                                    }
+
+                                    
                                 }
                             }
                             else
@@ -498,9 +511,16 @@ namespace TLIVERDED
                                 results.Add("Error al generar carta porte.");//mostrar 
                                 string tipom = "3";
                                 string titulo = "Error en el segmento: ";
-                                string mensaje = "Error al generar carta porte.";
+                                //string mensaje = "Error al generar carta porte.";
                                 DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
-                                facLabControler.enviarNotificacion(leg,titulo,mensaje);
+                                DataTable VerErrores = facLabControler.VerErrores(leg);
+                                foreach (DataRow itemr in VerErrores.Rows)
+                                {
+                                    string erro1 = itemr["Erro1"].ToString();
+                                    string erro2 = itemr["Erro2"].ToString();
+                                    string mensaje = "Error 1: " + erro1 + "\r\n" + "Error 2: " + erro2;
+                                    facLabControler.enviarNotificacion(leg, titulo, mensaje);
+                                }
                             }
                         }
                         else
@@ -523,9 +543,16 @@ namespace TLIVERDED
                         results.Add("Error al validar el segmento.");//mostrar 
                         string tipom = "3";
                         string titulo = "Error en el segmento: ";
-                        string mensaje = "Error al validar el segmento.";
+                        //string mensaje = "Error al validar el segmento.";
                         DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
-                        facLabControler.enviarNotificacion(leg,titulo,mensaje);
+                        DataTable VerErrores = facLabControler.VerErrores(leg);
+                        foreach (DataRow itemr in VerErrores.Rows)
+                        {
+                            string erro1 = itemr["Erro1"].ToString();
+                            string erro2 = itemr["Erro2"].ToString();
+                            string mensaje = "Error 1: " + erro1 + "\r\n" + "Error 2: " + erro2;
+                            facLabControler.enviarNotificacion(leg, titulo, mensaje);
+                        }
                     }
                 }
                 catch (Exception)
@@ -535,9 +562,16 @@ namespace TLIVERDED
                     results.Add("Segmento invalido");
                     string tipom = "3";
                     string titulo = "Error en el segmento: ";
-                    string mensaje = "Segmento invalido";
+                    //string mensaje = "Segmento invalido";
                     DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
-                    facLabControler.enviarNotificacion(leg,titulo,mensaje);
+                    DataTable VerErrores = facLabControler.VerErrores(leg);
+                    foreach (DataRow itemr in VerErrores.Rows)
+                    {
+                        string erro1 = itemr["Erro1"].ToString();
+                        string erro2 = itemr["Erro2"].ToString();
+                        string mensaje = "Error 1: " + erro1 + "\r\n" + "Error 2: " + erro2;
+                        facLabControler.enviarNotificacion(leg, titulo, mensaje);
+                    }
                 }
             }
             else { results.Add("Error3"); }

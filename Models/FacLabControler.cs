@@ -55,6 +55,10 @@ namespace TLIVERDED.Models
         {
             return this.modelFact.UpdateLeg(leg, tipom);
         }
+        public DataTable VerErrores(string leg)
+        {
+            return this.modelFact.VerErrores(leg);
+        }
 
         public DataTable facturasClientes()
         {

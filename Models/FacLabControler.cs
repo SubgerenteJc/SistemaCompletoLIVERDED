@@ -47,6 +47,14 @@ namespace TLIVERDED.Models
         {
             return this.modelFact.TieneMercancias(leg);
         }
+        public void GetMerca(string Ai_orden, string segmentod, string Av_cmd_code, string Av_cmd_description, string Af_weight, string Av_weightunit, string Af_count, string Av_countunit)
+        {
+            this.modelFact.GetMerca(Ai_orden, segmentod, Av_cmd_code, Av_cmd_description, Af_weight, Av_weightunit, Af_count, Av_countunit);
+        }
+        public void DeleteMerca(string segmentod)
+        {
+            this.modelFact.DeleteMerca(segmentod);
+        }
         public DataTable ExisteSegmento(string leg)
         {
             return this.modelFact.ExisteSegmento(leg);

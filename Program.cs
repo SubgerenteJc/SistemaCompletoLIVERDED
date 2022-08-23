@@ -54,28 +54,32 @@ namespace TLIVERDED
 
 
             Program muobject = new Program();
-           
+
             muobject.Extraer();
             //PASO 1 - VALIDA EN TRALIX QUE NO EXISTA EL SEGMENTO
             //facLabControler.RegEjecucion();
-            
+
         }
 
         public void Extraer()
         {
             string[] values;
             DataTable tbl = new DataTable();
-            //DirectoryInfo di24 = new DirectoryInfo(@"\\10.223.208.41\Users\Administrator\Documents\LIVERDED");
-            DirectoryInfo di24 = new DirectoryInfo(@"C:\Administración\Proyecto LIVERDED\Ordenes");
+            DirectoryInfo di24 = new DirectoryInfo(@"\\10.223.208.41\Users\Administrator\Documents\LIVERDED");
+            //DirectoryInfo di24 = new DirectoryInfo(@"C:\Administración\Proyecto LIVERDED\Ordenes");
+            
             FileInfo[] files24 = di24.GetFiles("*.dat");
+            
 
             int cantidad24 = files24.Length;
             if (cantidad24 > 0)
             {
                 foreach (var item in files24)
                 {
-                    //string sourceFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDED\" + item.Name;
-                    string sourceFile = @"C:\Administración\Proyecto LIVERDED\Ordenes\" + item.Name;
+                    string sourceFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDED\" + item.Name;
+                    //string sourceFile = @"C:\Administración\Proyecto LIVERDED\Ordenes\" + item.Name;
+                    string[] strAllLines = File.ReadAllLines(sourceFile, Encoding.Default);
+                    File.WriteAllLines(sourceFile, strAllLines.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray());
                     string lna = item.Name.ToLower();
                     string Ai_orden = lna.Replace(".dat", "");
                     string s2 = "-";
@@ -97,6 +101,7 @@ namespace TLIVERDED
                                 {
                                     if (counter > 1)
                                     {
+                                        
                                         values = line.Split('|');
                                         //string col1 = values[0];
                                         //string col2 = values[1];
@@ -130,8 +135,8 @@ namespace TLIVERDED
                                     counter++;
                                 }
                                 facLabControler.DeleteMerca(segmentod);
-                                //string destinationFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDEDUPLOADS\" + item.Name;
-                                string destinationFile = @"C:\Administración\Proyecto LIVERDED\Procesadas\" + item.Name;
+                                string destinationFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDEDUPLOADS\" + item.Name;
+                                //string destinationFile = @"C:\Administración\Proyecto LIVERDED\Procesadas\" + item.Name;
                                 System.IO.File.Move(sourceFile, destinationFile);
 
 
@@ -301,8 +306,8 @@ namespace TLIVERDED
                                         }
 
                                         facLabControler.DeleteMerc(Ai_orden);
-                                        //string destinationFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDEDUPLOADS\" + item.Name;
-                                        string destinationFile = @"C:\Administración\Proyecto LIVERDED\Procesadas\" + item.Name;
+                                        string destinationFile = @"\\10.223.208.41\Users\Administrator\Documents\LIVERDEDUPLOADS\" + item.Name;
+                                        //string destinationFile = @"C:\Administración\Proyecto LIVERDED\Procesadas\" + item.Name;
                                         System.IO.File.Move(sourceFile, destinationFile);
                                         //facLabControler.DeleteMerc(Ai_orden);
 
@@ -421,20 +426,7 @@ namespace TLIVERDED
                             }
                         }
                     }
-
-
-
-                  
-                            
-                           
-                        
                 }
-                   
-
-                    
-
-
-                
             }
         }
         public static List<string> valida(string leg)
@@ -490,9 +482,9 @@ namespace TLIVERDED
                                     string titulo = "Error en el segmento: ";
                                     //string mensaje = "Ver el historial de errores para mas información, copiar el error y reportar a TI.";
                                     DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
-                                    
 
-                                    
+
+
                                 }
                             }
                             else
@@ -504,7 +496,7 @@ namespace TLIVERDED
                                 string titulo = "Error en el segmento: ";
                                 string mensaje = "Error al generar carta porte.";
                                 DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
-                                
+
                                 facLabControler.enviarNotificacion(leg, titulo, mensaje);
                             }
                         }
@@ -518,7 +510,7 @@ namespace TLIVERDED
                             string titulo = "Error en el segmento: ";
                             string mensaje = "Error en la obtención de datos:" + validaCFDI[0];
                             DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
-                            facLabControler.enviarNotificacion(leg,titulo,mensaje);
+                            facLabControler.enviarNotificacion(leg, titulo, mensaje);
                         }
                     }
                     else
@@ -530,7 +522,7 @@ namespace TLIVERDED
                         string titulo = "Error en el segmento: ";
                         string mensaje = "Error al validar el segmento.";
                         DataTable updateLeg = facLabControler.UpdateLeg(leg, tipom);
-                       
+
                         facLabControler.enviarNotificacion(leg, titulo, mensaje);
                     }
                 }
@@ -549,7 +541,7 @@ namespace TLIVERDED
             else { results.Add("Error3"); }
             return results;
         }
-       
+
 
         public static void tiposCfds()
         {

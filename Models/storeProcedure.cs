@@ -56,6 +56,7 @@ namespace TLIVERDED.Models
             establecerConexion();
             comando = new SqlCommand(query, conexion);
             comando.CommandType = CommandType.Text;
+            comando.CommandTimeout = 19900000;
             string resultado = "";
             try
             {
@@ -89,6 +90,7 @@ namespace TLIVERDED.Models
             establecerConexion();
             comando = new SqlCommand(query, conexion);
             comando.CommandType = CommandType.Text;
+            comando.CommandTimeout = 19900000;
             try
             {
                 conexion.Open();

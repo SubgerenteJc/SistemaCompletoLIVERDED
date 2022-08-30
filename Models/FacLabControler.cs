@@ -39,6 +39,10 @@ namespace TLIVERDED.Models
         {
             return this.modelFact.GetEstatus(orden);
         }
+        public DataTable ExisteStatus(string seg)
+        {
+            return this.modelFact.ExisteStatus(seg);
+        }
         public DataTable GetSegmentoRepetido(string leg)
         {
             return this.modelFact.GetSegmentoRepetido(leg);

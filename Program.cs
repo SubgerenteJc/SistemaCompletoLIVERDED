@@ -152,7 +152,7 @@ namespace TLIVERDED
                                     foreach (var rlist in separados819)
                                     {
                                         string serie = rlist.serie;
-                                        if (serie == "TDRXP" || serie == "TDRZP")
+                                        if (serie == "TDRXP")
                                         {
                                             string tipomensaje = "9";
                                             DataTable updateLegs = facLabControler.UpdateLeg(segmentod, tipomensaje);
@@ -249,6 +249,7 @@ namespace TLIVERDED
                     else
                     {
                         string Av_weightunit = "KGM";
+                       
                         //facLabControler.getMercancias(Ai_orden, Av_cmd_code, Av_cmd_description, Af_weight, Av_weightunit, Af_count, Av_countunit);
 
                         DataTable rtds = facLabControler.ObtSegmento(Ai_orden);
@@ -269,7 +270,7 @@ namespace TLIVERDED
 
 
                                         int counter = 1;
-                                        foreach (string line in File.ReadLines(sourceFile, Encoding.Default))
+                                        foreach (string line in File.ReadLines(sourceFile, Encoding.UTF8))
                                         {
                                             if (counter > 1)
                                             {
@@ -327,7 +328,7 @@ namespace TLIVERDED
                                             foreach (var rlist in separados819)
                                             {
                                                 string serie = rlist.serie;
-                                                if (serie == "TDRXP" || serie == "TDRZP")
+                                                if (serie == "TDRXP")
                                                 {
                                                     DataTable vstatus = facLabControler.ExisteStatus(esegmento);
                                                     foreach (DataRow lstu in vstatus.Rows)
@@ -744,8 +745,8 @@ namespace TLIVERDED
 
                     DateTime fecha1 = Convert.ToDateTime(Fecha);
                     string fechaFinal = fecha1.Year + "-" + fecha1.Month + "-" + fecha1.Day + " " + fecha1.Hour + ":" + fecha1.Minute + ":" + fecha1.Second + "." + fecha1.Millisecond;
-
-                    facLabControler.generadas(folioFactura, serieFactura, uuidFactura, pdf_xml_descargaFactura, pdf_descargaFactura, xlm_descargaFactura, cancelFactura, leg, fechaFinal, Total, Moneda, RFC, Origen, Destino);
+                    string origenn = "1";
+                    facLabControler.generadas(folioFactura, serieFactura, uuidFactura, pdf_xml_descargaFactura, pdf_descargaFactura, xlm_descargaFactura, cancelFactura, leg, fechaFinal, Total, Moneda, RFC, origenn, Destino);
                     result.Add(folioFactura);
                     result.Add(serieFactura);
                     result.Add(uuidFactura);
